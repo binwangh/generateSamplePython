@@ -235,7 +235,7 @@ class generateDigitalCharacterSample:
             if(bitsNum > 4):
                 num = random.randint(0, bitsNum - 4)
                 AreaArr[num + 1] = AreaArr[num]
-                AreaArr[num + 2] = AreaArr[num]
+                AreaArr[num + 2] = AreaArr[num]      
         
         # 保存图像的文件名，如果直接用赋值，修改Area的同时也会修改AreaFileName的
         AreaFileName=[]
@@ -271,7 +271,7 @@ class generateDigitalCharacterSample:
         if (len(AreaStr) < 5):
             fontSize = 20 + random.randint(-3,8)
         elif (len(AreaStr) >= 5 and len(AreaStr) < 11):
-            fontSize = 20 + random.randint(-3,6)
+            fontSize = 20 + random.randint(-5,15)
         else:
             fontSize = 20 + random.randint(-3,4)
 #        print (fontSize)
@@ -354,12 +354,47 @@ class generateDigitalCharacterSample:
 
         return 0
     
+    # 针对特定字符串产生每个字体所对应的样本
+    def generateSpecialSample(self, Fonts, bgImgsDir, totalImgNum, output_dir):
+        
+        # 如果目标文件夹不存在，则创建对应的文件夹
+        if os.path.exists(output_dir) == False:
+            os.makedirs(output_dir)
+        
+        # 格式：'bgImg/***.jpg'
+        bgImgPathList = load_bgImgs(bgImgsDir)
+        fontsList = load_fonts(Fonts)
+
+        for i in range(1):
+            try:
+                print(i)
+               
+                # 随机选择一个背景图片
+                bgImg = Image.open(bgImgPathList[random.randint(0, len(bgImgPathList) - 1)])
+                
+                # 产生模拟区域
+                AreaStr = '21686771'
+                AreaFileNameStr = '21686771'
+                
+                # 将模拟区域放入在背景图之中
+                for j in range(len(fontsList)):
+                    self.drawAreaInBgImg(fontsList[j], bgImg, AreaStr, AreaFileNameStr, j, output_dir)
+                
+            except Exception as err:     
+                print("generateSample产生错误: ",end=''),print(err);                
+                continue
+
+        return 0
     
     def start(self, n):
         
         # 背景和字体路径
         bgImgsDir = 'bgImg/'
         Fonts = 'Fonts/'
+        
+        # 测试字体
+#        output = 'test'
+#        self.generateSpecialSample(Fonts, bgImgsDir, 15000, output)
         
         if (0):
             # 保存训练集
